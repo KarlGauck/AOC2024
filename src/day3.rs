@@ -96,3 +96,33 @@ pub fn part1()
     }
     println!("Sum: {}", sum);
 }
+
+pub fn part2()
+{
+    let mut input = read_input();
+    loop {
+        let disable_index = input.find("don't()");
+        let Some(disable_index) = disable_index else { break };
+        let disabled_string = &(input.clone())[disable_index.clone()..];
+        input = input[..disable_index.clone()].to_string();
+        let enable_index = disabled_string.find("do()");
+        let Some(enable_index) = enable_index else { break };
+        let rest_of_input = &disabled_string[enable_index..];
+        input += rest_of_input
+    }
+
+    let re = Regex::new(r"mul\([0-9]+,[0-9]+\)").unwrap();
+    let mut sum = 0;
+    for cap in re.captures_iter(&input) {
+        let cap = cap.get(0);
+        match cap {
+            Some(a) => {
+                let str = a.as_str().replace("mul(", "").replace(")", "");
+                let str = str.split(",").collect::<Vec<&str>>();
+                sum += str[0].parse::<i32>().unwrap() * str[1].parse::<i32>().unwrap();
+            }
+            None => {}
+        }
+    }
+    println!("Sum: {}", sum);
+}
