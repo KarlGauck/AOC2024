@@ -2,7 +2,7 @@ use std::fs;
 
 fn read_input() -> Vec<Vec<char>>
 {
-    fs::read_to_string("inputs/day4_part2_test.txt").unwrap().split("\n").map(|l| l.chars().collect()).collect()
+    fs::read_to_string("inputs/day4.txt").unwrap().split("\n").map(|l| l.chars().collect()).collect()
 }
 
 pub fn part1() {
@@ -81,6 +81,8 @@ pub fn part1() {
 pub fn part2() {
     let mut sum = 0;
 
+    fn add(a: i32, b: i32) -> i32 { a + b };
+
     let mut pattern1 = [
         ['M', ' ', 'S'],
         [' ', 'A', ' '],
@@ -95,15 +97,11 @@ pub fn part2() {
 
     let mut pattern3 = pattern1.clone();
     let pattern4 = pattern2.clone();
-    for mut i in 0..pattern1.len() {
-        let a = pattern1[i];
+
+    for mut a in &mut pattern1.into_iter() {
+        a.reverse();
     }
-    for a in pattern3 {
-        println!("{:?}", a);
-    }
-    for a in pattern1 {
-        println!("{:?}", a);
-    }
+
     pattern2.reverse();
 
     let diag_patterns = [pattern1, pattern2, pattern3, pattern4];
