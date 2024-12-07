@@ -141,7 +141,7 @@ fn inside_grid(grid: &Vec<Vec<char>>, pos: (i32, i32)) -> bool {
 returns Some(path) if there is a path
 returns NOne if there is a loop
 */
-fn calc_path(data: Vec<Vec<char>>, (horizontal_index, vertical_index): (i32, i32)) -> Option<Vec<((i32, i32), Dir)>> {
+fn calc_path(data: &Vec<Vec<char>>, (horizontal_index, vertical_index): (i32, i32)) -> Option<Vec<((i32, i32), Dir)>> {
     let mut visited: Vec<((i32, i32), Dir)> = vec![];
 
     let mut position = (horizontal_index, vertical_index);
@@ -175,7 +175,7 @@ fn calc_path(data: Vec<Vec<char>>, (horizontal_index, vertical_index): (i32, i32
 }
 
 pub fn part2() {
-    let data = read_input();
+    let mut data = read_input();
     let vertical_index = data.iter()
         .position(|s| s.iter().any(|c| Dir::char_list().contains(c)))
         .unwrap() as i32;
@@ -183,18 +183,24 @@ pub fn part2() {
         .position(|c| Dir::char_list().contains(c))
         .unwrap() as i32;
 
-    let path = calc_path(data.clone(), (horizontal_index, vertical_index)).unwrap();
-    println!("Size: {}", path.len());
+    let path = calc_path(&data, (horizontal_index, vertical_index)).unwrap();
+    let path = path.iter().filter(|(pos, dir)| pos.0 != horizontal_index || pos.1 != vertical_index).collect::<Vec<_>>();
+    let mut individual_positions: Vec<(i32, i32)> = vec![];
+    for (pos, dir) in path {
+        if ! individual_positions.contains(&pos) {
+            individual_positions.push(*pos);
+        }
+    }
 
     let mut sum = 0;
-    for i in 1..path.len() {
-        let (pos, dir) = &path[i];
-        let mut new_data = data.clone();
-        new_data[pos.1 as usize][pos.0 as usize] = '#';
-        let pathtest = calc_path(new_data, (horizontal_index, vertical_index));
+    for i in 0..individual_positions.len() {
+        let pos = &individual_positions[i];
+        let char = data[pos.1 as usize][pos.0 as usize];
+        data[pos.1 as usize][pos.0 as usize] = '#';
+        let pathtest = calc_path(&data, (horizontal_index, vertical_index));
+        data[pos.1 as usize][pos.0 as usize] = char;
         if pathtest == None {
             sum += 1;
-            println!("Loop found");
         }
     }
     println!("Sum: {}", sum);
