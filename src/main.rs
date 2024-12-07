@@ -1,6 +1,6 @@
 mod day6;
-mod vector;
+mod day7;
 
 fn main() {
-    day6::part1();
+    day7::part1();
 }
